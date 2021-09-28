@@ -29,6 +29,13 @@ Constraints:
     -100 <= Node.val <= 100
     Both l1 and l2 are sorted in non-decreasing order.
 
+Plan: 
+create new list l3
+traverse both lists
+    if (l1 < l2) l3 = l1
+        l1 -> next
+        l3->next (new node)
+
  */
 
 #include <iostream>
@@ -42,28 +49,38 @@ Constraints:
  };
 
 ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-    ListNode *merged = new ListNode(0);
-    ListNode *head = merged;
-    while(l1 && l2) {
-        if(l1->val <= l2->val) {
-            merged->next = l1;
-            l1 = l1->next;
-        } else {
-            merged->next = l2;
-            l2 = l2->next;
-        }
-        merged = merged->next;
+    ListNode *l3 = new ListNode();
+    ListNode *curr1 = l1;
+    ListNode *curr2 = l2;
+    ListNode *curr3 = l3;
+    if (curr1 == nullptr) return curr2;
+    if (curr2 == nullptr) return curr1;
 
+    if(curr1->val <= curr2->val) {
+        l3->val = curr1->val;
+        curr1 = curr1->next;
+    } else {
+        l3->val = curr2->val;
+        curr2 = curr2->next;
+    }
+    while(curr1 && curr2) {
+        if (curr1->val <= curr2->val) {
+            curr3->next = new ListNode(curr1->val);
+            curr3 = curr3->next;
+            curr1 = curr1->next;
+        } else {
+            curr3->next = new ListNode(curr2->val);
+            curr3 = curr3->next;
+            curr2 = curr2->next;
         }
-    if(l1){
-        merged->next = l1;
-        l1 = l1->next;
     }
-    if(l2) {
-        merged->next = l2;
-        l2 = l2->next;
+    if(curr1) {
+        curr3->next = curr1;
     }
-    return head->next;
+    if(curr2) {
+        curr3->next = curr2;
+    }
+    return l3;
 }
 
 int main() {
@@ -75,8 +92,14 @@ int main() {
     temp3 = new ListNode(4);
     temp2 = new ListNode(3, temp3);
     l2 = new ListNode(1, temp2);
+    /*
+    while(l1 && l2) {
+        std::cout << l1->val << "\t" << l2->val << std::endl;
+        l1 = l1->next; l2=l2->next;
+    }
+*/
     result = mergeTwoLists(l1, l2);
-    while (result != nullptr) {
+    while(result) {
         std::cout << result->val << " ";
         result = result->next;
     }
